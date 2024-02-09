@@ -1,14 +1,8 @@
-// screens/HomeScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, ActivityIndicator } from 'react-native';
-import { getBooks } from '../api/api'; 
+import { View, Text, Button, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { getBooks } from '../api/api';
 
 const HomeScreen = ({ navigation }) => {
-    // const [books, setBooks] = useState([
-    //     { id: 1, title: 'Book 1', author: 'Author 1' },
-    //     { id: 2, title: 'Book 2', author: 'Author 2' },
-    //     { id: 3, title: 'Book 3', author: 'Author 3' },
-    // ]);
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -18,7 +12,7 @@ const HomeScreen = ({ navigation }) => {
 
     const fetchBooks = async () => {
         try {
-            const fetchedBooks = await getBooks(); 
+            const fetchedBooks = await getBooks();
             setBooks(fetchedBooks);
             setLoading(false);
         } catch (error) {
@@ -27,17 +21,21 @@ const HomeScreen = ({ navigation }) => {
         }
     };
 
-    // if (loading) {
-    //     return (
-    //         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    //             <ActivityIndicator size="large" color="#0000ff" />
-    //         </View>
-    //     );
-    // }
+    const renderSeparator = () => {
+        return <View style={styles.separator} />;
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home Screen</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Trending Books</Text>
             <FlatList
                 data={books}
                 renderItem={({ item }) => (
@@ -47,9 +45,27 @@ const HomeScreen = ({ navigation }) => {
                     />
                 )}
                 keyExtractor={(item) => item.key.toString()}
+                ItemSeparatorComponent={renderSeparator}
             />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    separator: {
+        height: 5, 
+    },
+});
 
 export default HomeScreen;
